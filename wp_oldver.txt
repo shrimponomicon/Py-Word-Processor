@@ -1,0 +1,88 @@
+'''
+Derrian Cooper
+March 18, 2025
+word processor. tested with harrison bergeson by kurt vonnegut.
+'''
+
+def main():
+    unprText = input('Input text file for word processing.\n')
+    try:
+        inFile = open(unprText,'r')
+
+    except Exception as error:
+        print('Something went wrong:',error)
+    else:
+        word_dict,oneWord,char_list,word_list = getText(inFile)
+        displayProcess(word_dict,oneWord, char_list, word_list, unprText)
+
+def getText(inFile):
+    word_list=[]
+    oneWord = set(())
+    word_dict = {}
+    char_list=[]
+    
+    for line in inFile:
+        #formatted line
+        f_line = (line.casefold().title())
+        
+        #extend is necessary for sepearate lines to not create sublists
+        word_list.extend(f_line.split())
+        
+        #update is necessary for the same reasons above but .add() does not accept the .split as it is a list
+        oneWord.update(f_line.split())
+
+        char_list.extend(f_line.strip())
+        
+    word_list.sort()
+    for val in oneWord:
+        if val in word_list:
+            # A key:value for every word in word_count and every appearence of that word in word_list
+            word_dict.update({(val):word_list.count(val)})
+
+
+    return word_dict, oneWord, char_list, word_list
+
+def displayProcess(word_dict,oneWord,char_list,word_list, title):
+    mostWordValue = 1;
+    leastWordValue= 1;
+    MINIMUM_COUNT = 1
+
+    #list because can be multiple of least\most used words
+    mostWord=[]
+    leastWord=[]
+    
+    #Most Used Word
+    for val in oneWord:
+        if int(word_dict[val]) > mostWordValue:
+            mostWordValue = (word_dict[val])
+        else:
+            continue
+    for key in word_dict:
+        if mostWordValue == (word_dict[key]) and key.isalpha():
+            mostWord.append(key)
+            
+    #Least Used Word
+    for val in oneWord:
+        if int(word_dict[val]) > MINIMUM_COUNT:
+            leastWordValue = (word_dict[val])
+    #in seperate for loops to garuntee every val is checked
+    for val in oneWord:
+        if (word_dict[val]) < leastWordValue:
+            leastWordValue = (word_dict[val])      
+    for key in word_dict:
+        if leastWordValue == (word_dict[key]) and key.isalpha():
+            leastWord.append(key)
+            
+    print(f'''In {title}...\nThe most used word(s) are {mostWord} used a total of {mostWordValue} times.
+The least used word(s) are {leastWord} used a total of {leastWordValue} times.
+The total used words are {len(word_list)}
+The total used characters are {len(char_list)}.''')
+        
+    
+    
+    
+        
+#finished 2:54 PM 3/19/2025
+if __name__=="__main__":
+    main()
+        
